@@ -1,10 +1,69 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
 import "antd/dist/antd.css";
 import { Modal, Form, Input, DatePicker } from "antd";
+import { createTask } from "../../functions/task";
+import moment from "moment";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 
-const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
+import uuid from "react-uuid";
+
+const CollectionCreateForm = ({
+  visible,
+  setVisible,
+  columns2Len,
+  setColumns2Len,
+  setTaskBoardColumnValues,
+  onCancel,
+}) => {
+  const { user } = useSelector((state) => ({ ...state }));
   const [form] = Form.useForm();
+  let dispatch = useDispatch();
+  const stateItems = useSelector((state) => state.task.items);
+
+  const titleCreate = (values) => {
+    const indvItems = {
+      _id: uuid(),
+      title: values.title,
+      storypoints: values.storypoints,
+      deadline: moment(values.deadline).format("MM/DD/YYYY"),
+    };
+
+    onCreateTask(indvItems);
+  };
+
+  const callSum = (a, b) => {
+    console.log("sumVal", a + b);
+  };
+
+  const onCreateTask = (values) => {
+    const { _id, ...indvItems } = values;
+
+    callSum(2, 3);
+
+    createTask(
+      {
+        ...indvItems,
+      },
+      user.token
+    )
+      .then((res) => {
+        dispatch({
+          type: "CREATE_TASKS",
+          payload: values,
+        });
+
+        //  const obj = [...stateItems, values].length;
+        //  console.log("objlength", obj);
+        setColumns2Len([...stateItems, values].length);
+        setTaskBoardColumnValues(Object.assign([...stateItems, values]));
+        toast.success(`${res.data.title} is created`);
+      })
+      .catch((err) => {
+        if (err.response.status === 400) toast.error(err.response.data);
+      });
+  };
+
   return (
     <Modal
       visible={visible}
@@ -17,7 +76,9 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onCreate(values);
+            // onCreate(values);
+            setVisible(false);
+            titleCreate(values);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);

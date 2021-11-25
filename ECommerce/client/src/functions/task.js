@@ -7,3 +7,6 @@ export const createTask = async (task, authtoken) =>
 
 export const getTasks = async () =>
   await axios.get(`${process.env.REACT_APP_API}/tasks`);
+
+export const getTaskByTitle = async (title) =>
+  await axios.get(`${process.env.REACT_APP_API}/tasks/${title}`);

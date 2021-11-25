@@ -13,6 +13,7 @@ const taskSchema = new mongoose.Schema(
     storypoints: {
       type: String,
       required: true,
+      minlength: 10,
       maxlength: 2000,
       text: true,
     },

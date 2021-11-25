@@ -28,3 +28,17 @@ exports.read = async (req, res) => {
     });
   }
 };
+
+exports.getByTitle = async (req, res) => {
+  try {
+    let tasks = await Task.findOne({ title: req.params.title }).exec();
+    res.json(tasks);
+  } catch (err) {
+    console.log("err");
+    // res.status(400).send("Create Product failed");
+
+    res.status(400).json({
+      err: err.message,
+    });
+  }
+};

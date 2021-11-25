@@ -1,4 +1,6 @@
 const Category = require("../models/category");
+const Product = require("../models/product");
+const Sub = require("../models/sub");
 const slugify = require("slugify");
 
 exports.create = async (req, res) => {
@@ -24,7 +26,14 @@ exports.list = async (req, res) => {
 exports.read = async (req, res) => {
   try {
     let category = await Category.findOne({ slug: req.params.slug }).exec();
-    res.json(category);
+    const products = await Product.find({ category: category })
+      .populate("category")
+      .exec();
+
+    res.json({
+      category,
+      products,
+    });
   } catch (err) {
     res.status(400).send("List Category failed");
   }
@@ -51,4 +60,11 @@ exports.remove = async (req, res) => {
   } catch (err) {
     res.status(400).send("Remove Category failed");
   }
+};
+
+exports.getSubs = (req, res) => {
+  Sub.find({ parent: req.params._id }).exec((err, subs) => {
+    if (err) console.log(err);
+    res.json(subs);
+  });
 };

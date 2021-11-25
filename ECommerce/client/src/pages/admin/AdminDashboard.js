@@ -1,6 +1,5 @@
 import React from "react";
 import AdminNav from "../../components/nav/AdminNav";
-import MainTaskBoard from "./dashboard/MainTaskBoard";
 
 const AdminDashboard = () => {
   return (
@@ -9,8 +8,9 @@ const AdminDashboard = () => {
         <div className="col-md-2">
           <AdminNav />
         </div>
+
         <div className="col">
-          <MainTaskBoard />
+          <h4>Admin Dashboard</h4>
         </div>
       </div>
     </div>
